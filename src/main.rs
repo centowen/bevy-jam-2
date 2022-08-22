@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
 use bevy_turborand::*;
-use std::{time::Duration, f32::consts::PI};
+use std::{f32::consts::PI, time::Duration};
 
 struct CrabSpawnTimer {
     timer: Timer,
@@ -51,14 +51,16 @@ fn spawn_crab(
 }
 
 fn move_crabs(
-    mut q_crabs: Query<(&mut Transform, &mut Velocity), With<Crab>>,
+    mut q_crabs: Query<(&mut Transform, &mut Velocity, &mut Sprite), With<Crab>>,
     mut rng: ResMut<GlobalRng>,
 ) {
-    for (mut transform, mut velocity) in q_crabs.iter_mut() {
+    for (mut transform, mut velocity, mut sprite) in q_crabs.iter_mut() {
         velocity.0 += Vec2::new(rng.f32() * 2.0 - 1.0, rng.f32() * 2.0 - 1.0);
         velocity.0 *= 0.8;
         transform.translation += velocity.0.extend(0.0);
-        transform.rotation = Quat::from_rotation_z((PI/2.0)-f32::atan2(velocity.0.x, velocity.0.y));
+        let angle = (PI / 2.0) - f32::atan2(velocity.0.x, velocity.0.y);
+        transform.rotation = Quat::from_rotation_z(angle);
+        sprite.flip_y = angle > PI / 2.0;
     }
 }
 
