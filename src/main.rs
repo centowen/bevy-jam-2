@@ -46,7 +46,8 @@ fn spawn_crab(
                 ..default()
             })
             .insert(Velocity::default())
-            .insert(Crab);
+            .insert(Crab)
+            .insert(Name::new("Crab"));
     }
 }
 
