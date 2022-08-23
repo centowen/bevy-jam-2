@@ -41,6 +41,7 @@ fn spawn_crab(
     sounds: Res<SoundAssets>,
     audio: Res<Audio>,
     time: Res<Time>,
+    mut rng: ResMut<GlobalRng>,
     mut crab_timer: ResMut<CrabSpawnTimer>,
 ) {
     crab_timer.timer.tick(time.delta());
@@ -59,7 +60,7 @@ fn spawn_crab(
             .insert(Crab)
             .insert(Name::new("Crab"));
 
-        audio.play(sounds.crab.clone());
+        audio.play_with_settings(sounds.crab.clone(), PlaybackSettings::LOOP.with_volume(0.01).with_speed(0.05 + rng.f32() * 1.0));
     }
 }
 
