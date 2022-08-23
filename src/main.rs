@@ -52,6 +52,7 @@ fn spawn_crab(
                 texture: images.crab.clone(),
                 transform: Transform {
                     scale: Vec3::splat(0.02),
+                    translation: Vec3::new(200.0, 400.0, 0.0),
                     ..default()
                 },
                 ..default()
@@ -71,8 +72,9 @@ fn move_crabs(
     for (mut transform, mut velocity, mut sprite) in q_crabs.iter_mut() {
         let mut v_norm = (velocity.0.x.powf(2.0) + velocity.0.y.powf(2.0)).powf(0.5);
         if v_norm < 0.0001 {
-            velocity.0 = Vec2::new(rng.f32() * 2.0 - 1.0, rng.f32() * 2.0 - 1.0);
+            velocity.0 = Vec2::new(-transform.translation.x + 0.5, -transform.translation.y + 0.5); // Vec2::new(rng.f32() * 2.0 - 1.0, rng.f32() * 2.0 - 1.0);
             v_norm = (velocity.0.x.powf(2.0) + velocity.0.y.powf(2.0)).powf(0.5);
+            velocity.0 = velocity.0 / v_norm;
         }
         let nv = velocity.0 / v_norm;
         let perp_nv = Vec2::new(nv.y, -nv.x);
