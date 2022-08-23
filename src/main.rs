@@ -1,6 +1,7 @@
 mod assets;
 mod audio;
 mod crab;
+mod player;
 mod spawner;
 
 use bevy::audio::*;
@@ -10,9 +11,12 @@ use bevy_turborand::*;
 
 fn setup(mut commands: Commands, server: Res<AssetServer>) {
     commands.spawn_bundle(Camera2dBundle::default());
-    commands.insert_resource(assets::ImageAssets {
+    let image_assets = assets::ImageAssets {
         crab: server.load("rustacean-flat-noshadow.png"),
-    });
+        player: server.load("player.png"),
+    };
+    player::spawn_player(&mut commands, &image_assets);
+    commands.insert_resource(image_assets);
     commands.insert_resource(assets::SoundAssets {
         crab: server.load("sound/crab.ogg"),
     });
@@ -42,5 +46,6 @@ fn main() {
         .add_system(spawner::spawn_tick)
         .add_system(audio::play_audio)
         .add_system(crab::move_crabs)
+        .add_system(player::move_player)
         .run();
 }
