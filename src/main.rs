@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
 use bevy_turborand::*;
+use bevy::audio::*;
 use std::{f32::consts::PI, time::Duration};
 
 struct CrabSpawnTimer {
@@ -9,6 +10,10 @@ struct CrabSpawnTimer {
 
 struct ImageAssets {
     crab: Handle<Image>,
+}
+
+struct SoundAssets {
+    crab: Handle<AudioSource>,
 }
 
 #[derive(Component)]
@@ -25,11 +30,16 @@ fn setup(mut commands: Commands, server: Res<AssetServer>) {
     commands.insert_resource(ImageAssets {
         crab: server.load("rustacean-flat-noshadow.png"),
     });
+    commands.insert_resource(SoundAssets {
+        crab: server.load("sound/crab.ogg"),
+    });
 }
 
 fn spawn_crab(
     mut commands: Commands,
     images: Res<ImageAssets>,
+    sounds: Res<SoundAssets>,
+    audio: Res<Audio>,
     time: Res<Time>,
     mut crab_timer: ResMut<CrabSpawnTimer>,
 ) {
@@ -48,6 +58,8 @@ fn spawn_crab(
             .insert(Velocity::default())
             .insert(Crab)
             .insert(Name::new("Crab"));
+
+        audio.play(sounds.crab.clone());
     }
 }
 
@@ -77,6 +89,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(RngPlugin::default())
+        .add_plugin(AudioPlugin)
         .insert_resource(ClearColor(Color::rgb(0.8, 0.85, 0.85)))
         .add_startup_system(setup)
         .add_system(spawn_crab)
