@@ -11,7 +11,7 @@ pub fn spawn_plane(commands: &mut Commands, image_assets: &assets::ImageAssets) 
         .spawn_bundle(SpriteBundle {
             texture: image_assets.plane_shadow.clone(),
             transform: Transform {
-                translation: Vec3::new(1000.0, 0.0, 0.0),
+                translation: Vec3::new(1000.0, 0.0, 50.0),
                 ..default()
             },
             sprite: Sprite {
@@ -27,7 +27,7 @@ pub fn spawn_plane(commands: &mut Commands, image_assets: &assets::ImageAssets) 
                 .spawn_bundle(SpriteBundle {
                     texture: image_assets.plane.clone(),
                     transform: Transform {
-                        translation: Vec3::new(0.0, 20.0, 50.0),
+                        translation: Vec3::new(0.0, 20.0, 100.0),
                         ..default()
                     },
                     sprite: Sprite {
