@@ -1,6 +1,7 @@
 mod assets;
 mod audio;
 mod crab;
+mod plane;
 mod player;
 mod spawner;
 
@@ -14,8 +15,11 @@ fn setup(mut commands: Commands, server: Res<AssetServer>) {
     let image_assets = assets::ImageAssets {
         crab: server.load("rustacean-flat-noshadow.png"),
         player: server.load("player.png"),
+        plane: server.load("plane.png"),
+        plane_shadow: server.load("plane-shadow.png"),
     };
     player::spawn_player(&mut commands, &image_assets);
+    plane::spawn_plane(&mut commands, &image_assets);
     commands.insert_resource(image_assets);
     commands.insert_resource(assets::SoundAssets {
         crab: server.load("sound/crab.ogg"),
@@ -47,5 +51,6 @@ fn main() {
         .add_system(audio::play_audio)
         .add_system(crab::move_crabs)
         .add_system(player::move_player)
+        .add_system(plane::move_plane)
         .run();
 }
