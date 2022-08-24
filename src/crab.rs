@@ -11,7 +11,7 @@ pub struct Crab;
 pub struct Velocity(pub Vec2);
 
 pub fn move_crabs(
-    mut q_crabs: Query<(&mut Transform, &mut crab::Velocity, &mut Sprite), With<crab::Crab>>,
+    mut q_crabs: Query<(&mut Transform, &mut crab::Velocity, &mut Sprite), With<Crab>>,
     mut rng: ResMut<GlobalRng>,
 ) {
     for (mut transform, mut velocity, mut sprite) in q_crabs.iter_mut() {
@@ -32,5 +32,13 @@ pub fn move_crabs(
         let angle = (PI / 2.0) - f32::atan2(velocity.0.x, velocity.0.y);
         transform.rotation = Quat::from_rotation_z(angle);
         sprite.flip_y = angle > PI / 2.0;
+    }
+}
+
+pub fn despawn_crabs(mut commands: Commands, q_crabs: Query<(Entity, &Transform), With<Crab>>) {
+    for (entity, transform) in q_crabs.iter() {
+        if transform.translation.y < -400.0 {
+            commands.entity(entity).despawn_recursive();
+        }
     }
 }

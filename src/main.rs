@@ -50,6 +50,7 @@ fn main() {
         .add_system(spawner::spawn_tick)
         .add_system(audio::play_audio)
         .add_system(crab::move_crabs)
+        .add_system(crab::despawn_crabs)
         .add_system(player::move_player)
         .add_system(plane::move_plane)
         .run();
