@@ -37,7 +37,7 @@ pub fn move_crabs(
 
 pub fn despawn_crabs(mut commands: Commands, q_crabs: Query<(Entity, &Transform), With<Crab>>) {
     for (entity, transform) in q_crabs.iter() {
-        if transform.translation.y < -400.0 {
+        if transform.translation.length() > 600.0 {
             commands.entity(entity).despawn_recursive();
         }
     }
