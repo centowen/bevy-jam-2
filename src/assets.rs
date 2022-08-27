@@ -1,5 +1,5 @@
-use bevy::audio::*;
 use bevy::prelude::*;
+use bevy_kira_audio::prelude::*;
 
 pub struct ImageAssets {
     pub crab: Handle<Image>,

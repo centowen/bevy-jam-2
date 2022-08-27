@@ -1,6 +1,7 @@
 use crate::assets;
-use crate::audio;
 use crate::crab;
+use crate::audio;
+
 use bevy::prelude::*;
 
 const SPAWNER_THRESHOLD_ENERGY: i32 = 15;
@@ -24,7 +25,11 @@ pub fn spawn_tick(
     }
 }
 
-fn spawn_crab(translation: Vec3, commands: &mut Commands, images: &assets::ImageAssets) {
+fn spawn_crab(
+    translation: Vec3,
+    commands: &mut Commands,
+    images: &assets::ImageAssets
+) {
     commands
         .spawn_bundle(SpriteBundle {
             texture: images.crab.clone(),

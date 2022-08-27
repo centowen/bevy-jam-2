@@ -6,10 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = "0.8.0"
+bevy = { version = "0.8", default-features = false, features = ["bevy_asset", "bevy_winit", "render", "png", "x11"] }
+bevy_kira_audio = "0.12"
 bevy-inspector-egui = "0.12"
 bevy_turborand = "0.3.0"
-bevy_audio = "0.8.0"
 
 # Enable only a small amount of optimization in debug mode
 [profile.dev]

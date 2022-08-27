@@ -5,12 +5,13 @@ mod plane;
 mod player;
 mod spawner;
 
-use bevy::audio::*;
+use bevy_kira_audio::prelude::*;
 use bevy::prelude::*;
 use bevy_inspector_egui::WorldInspectorPlugin;
 use bevy_turborand::*;
 
-fn setup(mut commands: Commands, server: Res<AssetServer>) {
+fn setup(mut commands: Commands,
+         server: Res<AssetServer>) {
     commands.spawn_bundle(Camera2dBundle::default());
     let image_assets = assets::ImageAssets {
         crab: server.load("rustacean-flat-noshadow.png"),
@@ -24,6 +25,7 @@ fn setup(mut commands: Commands, server: Res<AssetServer>) {
     commands.insert_resource(assets::SoundAssets {
         crab: server.load("sound/crab.ogg"),
     });
+
     // KNARK: Add abstraction to create spawners
     commands
         .spawn()
@@ -47,6 +49,7 @@ fn main() {
         .add_plugin(AudioPlugin)
         .insert_resource(ClearColor(Color::rgb(0.8, 0.85, 0.85)))
         .add_startup_system(setup)
+        .add_startup_system(audio::start_background_audio)
         .add_system(spawner::spawn_tick)
         .add_system(audio::play_audio)
         .add_system(crab::move_crabs)
