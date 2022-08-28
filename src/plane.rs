@@ -1,4 +1,4 @@
-use crate::{assets, collision};
+use crate::{assets, collision, crab};
 use bevy::prelude::*;
 use std::f32::consts::PI;
 
@@ -66,6 +66,20 @@ pub fn move_plane(
         altitude.0 = 0.0;
     } else {
         transform.translation.x -= PLANE_SPEED * time.delta_seconds();
+    }
+}
+
+pub fn collide_with_world(
+    mut q_crabs: Query<&mut crab::Crab>,
+    q_plane: Query<(&collision::Collisions), With<Plane>>,
+) {
+    let (collisions) = q_plane.single();
+    for entity in collisions.entities.iter() {
+        let r_crab = q_crabs.get_mut(*entity);
+        if r_crab.is_ok() {
+            let mut crab = r_crab.unwrap();
+            crab.dead = true;
+        }
     }
 }
 

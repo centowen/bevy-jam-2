@@ -4,7 +4,9 @@ use bevy_turborand::*;
 use std::f32::consts::PI;
 
 #[derive(Component)]
-pub struct Crab;
+pub struct Crab {
+    pub dead: bool,
+}
 
 // KNARK: Probably shouldn't go here :^)
 #[derive(Component, Default)]
@@ -17,18 +19,20 @@ pub fn move_crabs(
             &mut crab::Velocity,
             &mut Sprite,
             &collision::Collisions,
+            &Crab,
         ),
-        (With<Crab>, Without<player::Player>),
+        (Without<player::Player>),
     >,
     q_player: Query<&player::Player, Without<Crab>>,
     mut rng: ResMut<GlobalRng>,
 ) {
-    for (mut transform, mut velocity, mut sprite, collisions) in q_crabs.iter_mut() {
+    for (mut transform, mut velocity, mut sprite, collisions, crab) in q_crabs.iter_mut() {
         if !collisions.entities.is_empty()
             && collisions
                 .entities
                 .iter()
                 .any(|ent| q_player.contains(*ent))
+            || crab.dead
         {
             continue;
         }

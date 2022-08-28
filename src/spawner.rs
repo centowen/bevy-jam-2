@@ -41,7 +41,7 @@ fn spawn_crab(translation: Vec3, commands: &mut Commands, images: &assets::Image
             ..default()
         })
         .insert(crab::Velocity::default())
-        .insert(crab::Crab)
+        .insert(crab::Crab { dead: false })
         .insert(audio::AudioEvent { played: false })
         .insert(Name::new("Crab"))
         .insert(collision::Collisions::new());
