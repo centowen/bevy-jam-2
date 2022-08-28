@@ -5,7 +5,7 @@ use std::f32::consts::PI;
 const PLANE_SPEED: f32 = 50.0;
 const INITIAL_PLANE_ALTITUDE: f32 = 100.0;
 const PLANE_DESCENT_SPEED: f32 = 5.0;
-const SUN_ANGLE: f32 = PI/2.0/3.0;
+const SUN_ANGLE: f32 = PI / 2.0 / 3.0;
 
 #[derive(Component)]
 pub struct Plane;
@@ -26,6 +26,7 @@ pub fn spawn_plane(commands: &mut Commands, image_assets: &assets::ImageAssets) 
             },
             sprite: Sprite {
                 flip_x: true,
+                custom_size: Some(Vec2::new(100.0, 90.0)),
                 ..default()
             },
             ..default()
@@ -44,6 +45,7 @@ pub fn spawn_plane(commands: &mut Commands, image_assets: &assets::ImageAssets) 
                     },
                     sprite: Sprite {
                         flip_x: true,
+                        custom_size: Some(Vec2::new(100.0, 90.0)),
                         ..default()
                     },
                     ..default()
@@ -73,6 +75,6 @@ pub fn move_plane_shadow(
 ) {
     let altitude = q_plane.single().0;
     let mut transform = q_plane_shadow.single_mut();
-    transform.translation.x = -altitude*SUN_ANGLE.sin();
-    transform.translation.y = -altitude*SUN_ANGLE.cos();
+    transform.translation.x = -altitude * SUN_ANGLE.sin();
+    transform.translation.y = -altitude * SUN_ANGLE.cos();
 }

@@ -10,8 +10,11 @@ pub fn spawn_player(commands: &mut Commands, image_assets: &assets::ImageAssets)
     commands
         .spawn_bundle(SpriteBundle {
             texture: image_assets.player.clone(),
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(40.0, 28.1)),
+                ..default()
+            },
             transform: Transform {
-                scale: Vec3::splat(0.2),
                 translation: Vec3::new(0.0, 0.0, 5.0),
                 ..default()
             },

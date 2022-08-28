@@ -29,9 +29,12 @@ pub fn spawn_tick(
 fn spawn_crab(translation: Vec3, commands: &mut Commands, images: &assets::ImageAssets) {
     commands
         .spawn_bundle(SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(16.0, 10.0)),
+                ..default()
+            },
             texture: images.crab.clone(),
             transform: Transform {
-                scale: Vec3::splat(0.02),
                 translation,
                 ..default()
             },
