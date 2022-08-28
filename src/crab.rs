@@ -23,6 +23,7 @@ pub fn move_crabs(
         ),
         Without<player::Player>,
     >,
+    q_crabs_2: Query<&Crab>,
     q_player: Query<&player::Player, Without<Crab>>,
     mut rng: ResMut<GlobalRng>,
 ) {
@@ -35,6 +36,12 @@ pub fn move_crabs(
             || crab.dead
         {
             continue;
+        }
+        for collision in collisions.collisions.iter() {
+            if q_crabs_2.get(collision.entity).is_ok() {
+                velocity.0.x *= -1.0;
+                transform.translation -= 3.0 * collision.offset.normalize();
+            }
         }
         if velocity.0.length() < 0.0001 {
             velocity.0 = Vec2::new(
