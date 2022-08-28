@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use itertools::Itertools;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
@@ -48,7 +49,7 @@ struct Grid {
 }
 
 impl Grid {
-    pub fn new(iter: &mut dyn Iterator<Item = (Entity, &Transform, &Collisions)>) -> Grid {
+    pub fn new(iter: &mut dyn Iterator<Item = (Entity, &Transform, &Sprite, &Collisions)>) -> Grid {
         let mut grid = Grid {
             storage: vec![Vec::new(); GRID_COLS * GRID_ROWS],
             dimension: Rect {
@@ -59,7 +60,7 @@ impl Grid {
             rows: GRID_ROWS,
             cols: GRID_COLS,
         };
-        for (entity, transform, _collisions) in
+        for (entity, transform, _, _collisions) in
             iter.filter(|t| grid.dimension.contains(t.1.translation.truncate()))
         {
             let offset = grid.cell_offset(transform.translation.truncate());
@@ -99,37 +100,36 @@ impl Grid {
     }
 }
 
-pub fn collide_stuff(mut q_objects: Query<(Entity, &Transform, &mut Collisions)>) {
-    for (_, _, mut collisions) in q_objects.iter_mut() {
+pub fn collide_stuff(mut q_objects: Query<(Entity, &Transform, &Sprite, &mut Collisions)>) {
+    for (_, _, _, mut collisions) in q_objects.iter_mut() {
         collisions.entities.clear();
     }
     let grid = Grid::new(&mut q_objects.iter());
     let mut tmp_collisions = Vec::new();
-    for (entity, transform, _) in q_objects.iter() {
+    for (entity, transform, image, _) in q_objects.iter() {
         // query grid
-        let entities = grid.get_entities(
-            grid.row(transform.translation.truncate()),
-            grid.col(transform.translation.truncate()),
-        );
+        let row = grid.row(transform.translation.truncate());
+        let col = grid.col(transform.translation.truncate());
+        let entities =
+            ((row - 1)..(row + 2)).cartesian_product((col-1) ..(col + 2))
+            .flat_map(|(r, c)| grid.get_entities(r, c));
         for e_entity in entities {
             if entity == *e_entity {
                 continue;
             }
-            let (_, e_transform, _) = q_objects.get(*e_entity).unwrap();
+            let (_, e_transform, e_image, _) = q_objects.get(*e_entity).unwrap();
             if let Some(_) = bevy::sprite::collide_aabb::collide(
                 transform.translation,
-                // KNARK: This is not the correct size
-                Vec2 { x: 10.0, y: 10.0 },
+                image.custom_size.unwrap(),
                 e_transform.translation,
-                // KNARK: This is not the correct size
-                Vec2 { x: 10.0, y: 10.0 },
+                e_image.custom_size.unwrap(),
             ) {
                 tmp_collisions.push((entity, *e_entity));
             }
         }
     }
     for collision in tmp_collisions {
-        let (_, _, mut collisions) = q_objects.get_mut(collision.0).unwrap();
+        let (_, _, _, mut collisions) = q_objects.get_mut(collision.0).unwrap();
         collisions.entities.push(collision.1);
     }
 }

@@ -11,6 +11,7 @@ bevy_kira_audio = "0.12"
 bevy-inspector-egui = "0.12"
 bevy_turborand = "0.3.0"
 bevy_prototype_lyon = "0.6.0"
+itertools = "*"
 
 # Enable only a small amount of optimization in debug mode
 [profile.dev]
