@@ -1,4 +1,4 @@
-use crate::crab;
+use crate::{collision, crab, player};
 use bevy::prelude::*;
 use bevy_turborand::*;
 use std::f32::consts::PI;
@@ -11,10 +11,27 @@ pub struct Crab;
 pub struct Velocity(pub Vec2);
 
 pub fn move_crabs(
-    mut q_crabs: Query<(&mut Transform, &mut crab::Velocity, &mut Sprite), With<Crab>>,
+    mut q_crabs: Query<
+        (
+            &mut Transform,
+            &mut crab::Velocity,
+            &mut Sprite,
+            &collision::Collisions,
+        ),
+        (With<Crab>, Without<player::Player>),
+    >,
+    q_player: Query<&player::Player, Without<Crab>>,
     mut rng: ResMut<GlobalRng>,
 ) {
-    for (mut transform, mut velocity, mut sprite) in q_crabs.iter_mut() {
+    for (mut transform, mut velocity, mut sprite, collisions) in q_crabs.iter_mut() {
+        if !collisions.entities.is_empty()
+            && collisions
+                .entities
+                .iter()
+                .any(|ent| q_player.contains(*ent))
+        {
+            continue;
+        }
         if velocity.0.length() < 0.0001 {
             velocity.0 = Vec2::new(
                 -transform.translation.x + 0.5,

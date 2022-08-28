@@ -1,4 +1,4 @@
-use crate::{assets, collision};
+use crate::{assets, collision, crab};
 use bevy::prelude::*;
 
 const PLAYER_SPEED: f32 = 50.0;
@@ -27,20 +27,38 @@ pub fn spawn_player(commands: &mut Commands, image_assets: &assets::ImageAssets)
 
 pub fn move_player(
     keyboard_input: Res<Input<KeyCode>>,
-    mut q_player: Query<&mut Transform, With<Player>>,
+    mut q_player: Query<
+        (&mut Transform, &collision::Collisions),
+        (With<Player>, Without<crab::Crab>),
+    >,
+    mut q_crabs: Query<&mut Transform, (With<crab::Crab>, Without<Player>)>,
     time: Res<Time>,
 ) {
-    let mut transform = q_player.single_mut();
+    let (mut transform, collisions) = q_player.single_mut();
+    let mut player_translation = Vec3::default();
+
     if keyboard_input.pressed(KeyCode::Right) {
-        transform.translation.x += PLAYER_SPEED * time.delta_seconds();
+        player_translation.x += PLAYER_SPEED * time.delta_seconds();
     }
     if keyboard_input.pressed(KeyCode::Left) {
-        transform.translation.x -= PLAYER_SPEED * time.delta_seconds();
+        player_translation.x -= PLAYER_SPEED * time.delta_seconds();
     }
     if keyboard_input.pressed(KeyCode::Up) {
-        transform.translation.y += PLAYER_SPEED * time.delta_seconds();
+        player_translation.y += PLAYER_SPEED * time.delta_seconds();
     }
     if keyboard_input.pressed(KeyCode::Down) {
-        transform.translation.y -= PLAYER_SPEED * time.delta_seconds();
+        player_translation.y -= PLAYER_SPEED * time.delta_seconds();
     };
+    transform.translation += player_translation;
+
+    for ent in collisions.entities.iter() {
+        match q_crabs.get_mut(*ent) {
+            Ok(mut crab_transform) => {
+                crab_transform.translation += player_translation;
+            }
+            _ => {
+                // If the colliding thing isn't a crab we don't care.
+            }
+        }
+    }
 }
