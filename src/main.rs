@@ -76,12 +76,12 @@ fn setup(mut commands: Commands, server: Res<AssetServer>) {
 
 fn main() {
     App::new()
-        // TODO: Disable window resizing...
         .insert_resource(WindowDescriptor {
             title: "Comb Ine".to_string(),
             width: 1280.,
             height: 768.,
             present_mode: PresentMode::AutoVsync,
+            resizable: false,
             ..default()
         })
         .add_plugins(DefaultPlugins)
