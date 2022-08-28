@@ -15,7 +15,7 @@ pub fn move_crabs(
     mut rng: ResMut<GlobalRng>,
 ) {
     for (mut transform, mut velocity, mut sprite) in q_crabs.iter_mut() {
-        if velocity.0.length()< 0.0001 {
+        if velocity.0.length() < 0.0001 {
             velocity.0 = Vec2::new(
                 -transform.translation.x + 0.5,
                 -transform.translation.y + 0.5,

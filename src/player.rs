@@ -1,4 +1,4 @@
-use crate::assets;
+use crate::{assets, collision};
 use bevy::prelude::*;
 
 const PLAYER_SPEED: f32 = 50.0;
@@ -18,7 +18,8 @@ pub fn spawn_player(commands: &mut Commands, image_assets: &assets::ImageAssets)
             ..default()
         })
         .insert(Player)
-        .insert(Name::new("Player"));
+        .insert(Name::new("Player"))
+        .insert(collision::Collisions::new());
 }
 
 pub fn move_player(

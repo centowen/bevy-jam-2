@@ -1,30 +1,30 @@
 mod assets;
 mod audio;
+mod collision;
 mod crab;
 mod plane;
 mod player;
 mod spawner;
 
-use bevy_kira_audio::prelude::*;
-use bevy_inspector_egui::WorldInspectorPlugin;
-use bevy_turborand::*;
-use bevy_prototype_lyon::prelude::*;
 use bevy::{prelude::*, window::PresentMode};
+use bevy_inspector_egui::WorldInspectorPlugin;
+use bevy_kira_audio::prelude::*;
+use bevy_prototype_lyon::prelude::*;
+use bevy_turborand::*;
 
-fn setup(mut commands: Commands,
-         server: Res<AssetServer>) {
+fn setup(mut commands: Commands, server: Res<AssetServer>) {
     commands.spawn_bundle(Camera2dBundle::default());
-   // Airfield test begins
+    // Airfield test begins
     let mut strip_builder = PathBuilder::new();
-    strip_builder.move_to(Vec2::new(-640.0,0.0));
+    strip_builder.move_to(Vec2::new(-640.0, 0.0));
     strip_builder.line_to(Vec2::new(640.0, 0.0));
     let strip = strip_builder.build();
     let mut up_builder = PathBuilder::new();
-    up_builder.move_to(Vec2::new(-640.0,209.0));
+    up_builder.move_to(Vec2::new(-640.0, 209.0));
     up_builder.line_to(Vec2::new(640.0, 209.0));
     let up = up_builder.build();
     let mut down_builder = PathBuilder::new();
-    down_builder.move_to(Vec2::new(-640.0,-209.0));
+    down_builder.move_to(Vec2::new(-640.0, -209.0));
     down_builder.line_to(Vec2::new(640.0, -209.0));
     let down = down_builder.build();
 
@@ -43,7 +43,7 @@ fn setup(mut commands: Commands,
         DrawMode::Stroke(StrokeMode::new(Color::BLUE, 350.0)),
         Transform::default(),
     ));
-   // Airfield test ends
+    // Airfield test ends
     let image_assets = assets::ImageAssets {
         crab: server.load("rustacean-flat-noshadow.png"),
         player: server.load("player.png"),
@@ -51,7 +51,6 @@ fn setup(mut commands: Commands,
         plane_shadow: server.load("plane-shadow.png"),
     };
 
-    
     player::spawn_player(&mut commands, &image_assets);
     plane::spawn_plane(&mut commands, &image_assets);
     commands.insert_resource(image_assets);
@@ -86,7 +85,7 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_plugin(ShapePlugin)
-        //.add_plugin(WorldInspectorPlugin::new())
+        .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(RngPlugin::default())
         .add_plugin(AudioPlugin)
         .insert_resource(ClearColor(Color::rgb(0.8, 0.85, 0.85)))
@@ -99,5 +98,7 @@ fn main() {
         .add_system(player::move_player)
         .add_system(plane::move_plane)
         .add_system(plane::move_plane_shadow)
+        .add_system(collision::collide_stuff)
+        .register_type::<collision::Collisions>()
         .run();
 }

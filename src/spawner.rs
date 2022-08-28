@@ -1,6 +1,7 @@
 use crate::assets;
-use crate::crab;
 use crate::audio;
+use crate::collision;
+use crate::crab;
 
 use bevy::prelude::*;
 
@@ -25,11 +26,7 @@ pub fn spawn_tick(
     }
 }
 
-fn spawn_crab(
-    translation: Vec3,
-    commands: &mut Commands,
-    images: &assets::ImageAssets
-) {
+fn spawn_crab(translation: Vec3, commands: &mut Commands, images: &assets::ImageAssets) {
     commands
         .spawn_bundle(SpriteBundle {
             texture: images.crab.clone(),
@@ -43,5 +40,6 @@ fn spawn_crab(
         .insert(crab::Velocity::default())
         .insert(crab::Crab)
         .insert(audio::AudioEvent { played: false })
-        .insert(Name::new("Crab"));
+        .insert(Name::new("Crab"))
+        .insert(collision::Collisions::new());
 }

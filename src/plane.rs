@@ -1,4 +1,4 @@
-use crate::assets;
+use crate::{assets, collision};
 use bevy::prelude::*;
 use std::f32::consts::PI;
 
@@ -33,6 +33,7 @@ pub fn spawn_plane(commands: &mut Commands, image_assets: &assets::ImageAssets) 
         .insert(Altitude(INITIAL_PLANE_ALTITUDE))
         .insert(Plane)
         .insert(Name::new("Plane"))
+        .insert(collision::Collisions::new())
         .with_children(|parent| {
             parent
                 .spawn_bundle(SpriteBundle {

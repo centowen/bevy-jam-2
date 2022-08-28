@@ -1,8 +1,8 @@
 use crate::assets;
 
+use bevy::prelude::*;
 use bevy_kira_audio::prelude::*;
 use bevy_turborand::*;
-use bevy::prelude::*;
 
 // KNARK: Cleanup after sound has been played
 // TODO: How support other sounds?
@@ -31,9 +31,6 @@ pub fn play_audio(
     }
 }
 
-pub fn start_background_audio(
-    asset_server: Res<AssetServer>,
-    audio: Res<Audio>
-) {
+pub fn start_background_audio(asset_server: Res<AssetServer>, audio: Res<Audio>) {
     audio.play(asset_server.load("sound/calypso.ogg")).looped();
 }
