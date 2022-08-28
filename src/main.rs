@@ -12,38 +12,77 @@ use bevy_kira_audio::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 use bevy_turborand::*;
 
-fn setup(mut commands: Commands, server: Res<AssetServer>) {
-    commands.spawn_bundle(Camera2dBundle::default());
-    // Airfield test begins
+const WORLD_SIZE: (f32, f32) = (1280.0, 768.0);
+
+fn build_airfield(commands: &mut Commands) {
+    const X_MIN: f32 = -WORLD_SIZE.0 / 2.0;
+    const X_MAX: f32 = WORLD_SIZE.0 / 2.0;
+
+    const STRIP_WIDTH: f32 = 68.0;
+    const WATER_WIDTH: f32 = 70.0;
+    const GROUND_WIDTH: f32 = WORLD_SIZE.1 / 2.0 - STRIP_WIDTH / 2.0 - WATER_WIDTH;
+
+    const STRIP_POS: f32 = 0.0;
+    const GROUND_POS: f32 = STRIP_WIDTH / 2.0 + GROUND_WIDTH / 2.0;
+    const WATER_POS: f32 = STRIP_WIDTH / 2.0 + GROUND_WIDTH + WATER_WIDTH / 2.0;
+
     let mut strip_builder = PathBuilder::new();
-    strip_builder.move_to(Vec2::new(-640.0, 0.0));
-    strip_builder.line_to(Vec2::new(640.0, 0.0));
+    strip_builder.move_to(Vec2::new(X_MIN, STRIP_POS));
+    strip_builder.line_to(Vec2::new(X_MAX, STRIP_POS));
     let strip = strip_builder.build();
     let mut up_builder = PathBuilder::new();
-    up_builder.move_to(Vec2::new(-640.0, 209.0));
-    up_builder.line_to(Vec2::new(640.0, 209.0));
+    up_builder.move_to(Vec2::new(X_MIN, GROUND_POS));
+    up_builder.line_to(Vec2::new(X_MAX, GROUND_POS));
     let up = up_builder.build();
     let mut down_builder = PathBuilder::new();
-    down_builder.move_to(Vec2::new(-640.0, -209.0));
-    down_builder.line_to(Vec2::new(640.0, -209.0));
+    down_builder.move_to(Vec2::new(X_MIN, -GROUND_POS));
+    down_builder.line_to(Vec2::new(X_MAX, -GROUND_POS));
     let down = down_builder.build();
 
+    let mut up_water_builder = PathBuilder::new();
+    up_water_builder.move_to(Vec2::new(X_MIN, WATER_POS));
+    up_water_builder.line_to(Vec2::new(X_MAX, WATER_POS));
+    let up_water = up_water_builder.build();
+    let mut down_water_builder = PathBuilder::new();
+    down_water_builder.move_to(Vec2::new(X_MIN, -WATER_POS));
+    down_water_builder.line_to(Vec2::new(X_MAX, -WATER_POS));
+    let down_water = down_water_builder.build();
+
+    let strip_color = Color::rgb_u8(0x53, 0x55, 0x4c);
+    let ground_color = Color::rgb_u8(0xEA, 0xB8, 0x75);
+    let water_color = Color::rgb_u8(0x53, 0xCC, 0xEC);
     commands.spawn_bundle(GeometryBuilder::build_as(
         &strip,
-        DrawMode::Stroke(StrokeMode::new(Color::BLACK, 68.0)),
+        DrawMode::Stroke(StrokeMode::new(strip_color, STRIP_WIDTH)),
         Transform::default(),
     ));
     commands.spawn_bundle(GeometryBuilder::build_as(
         &up,
-        DrawMode::Stroke(StrokeMode::new(Color::BLUE, 350.0)),
+        DrawMode::Stroke(StrokeMode::new(ground_color, GROUND_WIDTH)),
         Transform::default(),
     ));
     commands.spawn_bundle(GeometryBuilder::build_as(
         &down,
-        DrawMode::Stroke(StrokeMode::new(Color::BLUE, 350.0)),
+        DrawMode::Stroke(StrokeMode::new(ground_color, GROUND_WIDTH)),
         Transform::default(),
     ));
-    // Airfield test ends
+    commands.spawn_bundle(GeometryBuilder::build_as(
+        &up_water,
+        DrawMode::Stroke(StrokeMode::new(water_color, WATER_WIDTH)),
+        Transform::default(),
+    ));
+    commands.spawn_bundle(GeometryBuilder::build_as(
+        &down_water,
+        DrawMode::Stroke(StrokeMode::new(water_color, WATER_WIDTH)),
+        Transform::default(),
+    ));
+}
+
+fn setup(mut commands: Commands, server: Res<AssetServer>) {
+    commands.spawn_bundle(Camera2dBundle::default());
+
+    build_airfield(&mut commands);
+
     let image_assets = assets::ImageAssets {
         crab: server.load("rustacean-flat-noshadow.png"),
         dead_crab: server.load("dead_crab.png"),
@@ -78,8 +117,8 @@ fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
             title: "Comb Ine".to_string(),
-            width: 1280.,
-            height: 768.,
+            width: WORLD_SIZE.0,
+            height: WORLD_SIZE.1,
             present_mode: PresentMode::AutoVsync,
             resizable: false,
             ..default()
