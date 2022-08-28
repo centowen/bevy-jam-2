@@ -21,7 +21,7 @@ pub fn move_crabs(
             &collision::Collisions,
             &Crab,
         ),
-        (Without<player::Player>),
+        Without<player::Player>,
     >,
     q_player: Query<&player::Player, Without<Crab>>,
     mut rng: ResMut<GlobalRng>,
