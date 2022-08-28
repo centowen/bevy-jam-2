@@ -110,8 +110,8 @@ pub fn collide_stuff(mut q_objects: Query<(Entity, &Transform, &Sprite, &mut Col
         // query grid
         let row = grid.row(transform.translation.truncate());
         let col = grid.col(transform.translation.truncate());
-        let entities =
-            ((row - 1)..(row + 2)).cartesian_product((col-1) ..(col + 2))
+        let entities = ((if row == 0 { 1 } else { row } - 1)..(row + 2))
+            .cartesian_product((if col == 0 { 1 } else { col } - 1)..(col + 2))
             .flat_map(|(r, c)| grid.get_entities(r, c));
         for e_entity in entities {
             if entity == *e_entity {
