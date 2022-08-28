@@ -41,8 +41,26 @@ fn spawn_crab(translation: Vec3, commands: &mut Commands, images: &assets::Image
             ..default()
         })
         .insert(crab::Velocity::default())
-        .insert(crab::Crab { dead: false })
+        .insert(crab::Crab)
         .insert(audio::AudioEvent { played: false })
         .insert(Name::new("Crab"))
         .insert(collision::Collisions::new());
+}
+
+pub fn spawn_dead_crab(translation: Vec3, commands: &mut Commands, images: &assets::ImageAssets) {
+    commands
+        .spawn_bundle(SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(16.0, 10.0)),
+                ..default()
+            },
+            texture: images.dead_crab.clone(),
+            transform: Transform {
+                translation,
+                ..default()
+            },
+            ..default()
+        })
+        .insert(crab::DeadCrab)
+        .insert(Name::new("DeadCrab"));
 }

@@ -1,4 +1,4 @@
-use crate::{assets, collision, crab};
+use crate::{assets, collision, crab, spawner};
 use bevy::prelude::*;
 use std::f32::consts::PI;
 
@@ -70,15 +70,19 @@ pub fn move_plane(
 }
 
 pub fn collide_with_world(
-    mut q_crabs: Query<&mut crab::Crab>,
+    q_crabs: Query<(&crab::Crab, &Transform)>,
     q_plane: Query<&collision::Collisions, With<Plane>>,
+    mut commands: Commands,
+    images: Res<assets::ImageAssets>,
 ) {
     let collisions = q_plane.single();
     for collision in collisions.collisions.iter() {
-        let r_crab = q_crabs.get_mut(collision.entity);
+        let r_crab = q_crabs.get(collision.entity);
         if r_crab.is_ok() {
-            let mut crab = r_crab.unwrap();
-            crab.dead = true;
+            let (crab, transform) = r_crab.unwrap();
+            // commands.entity(*entity).remove::<crab::Crab>().insert(crab::DeadCrab);
+            commands.entity(collision.entity).despawn_recursive();
+            spawner::spawn_dead_crab(transform.translation, &mut commands, &images);
         }
     }
 }

@@ -46,6 +46,7 @@ fn setup(mut commands: Commands, server: Res<AssetServer>) {
     // Airfield test ends
     let image_assets = assets::ImageAssets {
         crab: server.load("rustacean-flat-noshadow.png"),
+        dead_crab: server.load("dead_crab.png"),
         player: server.load("player.png"),
         plane: server.load("plane.png"),
         plane_shadow: server.load("plane-shadow.png"),
