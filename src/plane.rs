@@ -78,8 +78,7 @@ pub fn collide_with_world(
     let collisions = q_plane.single();
     for collision in collisions.collisions.iter() {
         let r_crab = q_crabs.get(collision.entity);
-        if r_crab.is_ok() {
-            let (crab, transform) = r_crab.unwrap();
+        if let Ok((_crab, transform)) = r_crab {
             // commands.entity(*entity).remove::<crab::Crab>().insert(crab::DeadCrab);
             commands.entity(collision.entity).despawn_recursive();
             spawner::spawn_dead_crab(transform.translation, &mut commands, &images);

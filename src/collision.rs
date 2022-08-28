@@ -122,12 +122,14 @@ pub fn collide_stuff(mut q_objects: Query<(Entity, &Transform, &Sprite, &mut Col
                 continue;
             }
             let (_, e_transform, e_image, _) = q_objects.get(*e_entity).unwrap();
-            if let Some(_) = bevy::sprite::collide_aabb::collide(
+            if bevy::sprite::collide_aabb::collide(
                 transform.translation,
                 image.custom_size.unwrap(),
                 e_transform.translation,
                 e_image.custom_size.unwrap(),
-            ) {
+            )
+            .is_some()
+            {
                 tmp_collisions.push((entity, *e_entity));
             }
         }

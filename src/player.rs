@@ -52,13 +52,8 @@ pub fn move_player(
     transform.translation += player_translation;
 
     for collision in collisions.collisions.iter() {
-        match q_crabs.get_mut(collision.entity) {
-            Ok(mut crab_transform) => {
-                crab_transform.translation += player_translation;
-            }
-            _ => {
-                // If the colliding thing isn't a crab we don't care.
-            }
+        if let Ok(mut crab_transform) = q_crabs.get_mut(collision.entity) {
+            crab_transform.translation += player_translation;
         }
     }
 }
