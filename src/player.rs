@@ -51,8 +51,8 @@ pub fn move_player(
     };
     transform.translation += player_translation;
 
-    for ent in collisions.entities.iter() {
-        match q_crabs.get_mut(*ent) {
+    for collision in collisions.collisions.iter() {
+        match q_crabs.get_mut(collision.entity) {
             Ok(mut crab_transform) => {
                 crab_transform.translation += player_translation;
             }

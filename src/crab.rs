@@ -27,11 +27,11 @@ pub fn move_crabs(
     mut rng: ResMut<GlobalRng>,
 ) {
     for (mut transform, mut velocity, mut sprite, collisions, crab) in q_crabs.iter_mut() {
-        if !collisions.entities.is_empty()
+        if !collisions.collisions.is_empty()
             && collisions
-                .entities
+                .collisions
                 .iter()
-                .any(|ent| q_player.contains(*ent))
+                .any(|c| q_player.contains(c.entity))
             || crab.dead
         {
             continue;

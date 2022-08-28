@@ -1,16 +1,20 @@
 use bevy::prelude::*;
 use itertools::Itertools;
 
-#[derive(Component, Default, Reflect)]
-#[reflect(Component)]
+pub struct Collision {
+    pub entity: Entity,
+    pub offset: Vec3,
+}
+
+#[derive(Component)]
 pub struct Collisions {
-    pub entities: Vec<Entity>,
+    pub collisions: Vec<Collision>,
 }
 
 impl Collisions {
     pub fn new() -> Collisions {
         Collisions {
-            entities: Vec::new(),
+            collisions: Vec::new(),
         }
     }
 }
@@ -102,7 +106,7 @@ impl Grid {
 
 pub fn collide_stuff(mut q_objects: Query<(Entity, &Transform, &Sprite, &mut Collisions)>) {
     for (_, _, _, mut collisions) in q_objects.iter_mut() {
-        collisions.entities.clear();
+        collisions.collisions.clear();
     }
     let grid = Grid::new(&mut q_objects.iter());
     let mut tmp_collisions = Vec::new();
@@ -129,7 +133,11 @@ pub fn collide_stuff(mut q_objects: Query<(Entity, &Transform, &Sprite, &mut Col
         }
     }
     for collision in tmp_collisions {
-        let (_, _, _, mut collisions) = q_objects.get_mut(collision.0).unwrap();
-        collisions.entities.push(collision.1);
+        let other_transform = q_objects.get(collision.1).unwrap().1.clone();
+        let (_, transform, _, mut collisions) = q_objects.get_mut(collision.0).unwrap();
+        collisions.collisions.push(Collision {
+            entity: collision.1,
+            offset: other_transform.translation - transform.translation,
+        });
     }
 }

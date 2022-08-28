@@ -74,8 +74,8 @@ pub fn collide_with_world(
     q_plane: Query<&collision::Collisions, With<Plane>>,
 ) {
     let collisions = q_plane.single();
-    for entity in collisions.entities.iter() {
-        let r_crab = q_crabs.get_mut(*entity);
+    for collision in collisions.collisions.iter() {
+        let r_crab = q_crabs.get_mut(collision.entity);
         if r_crab.is_ok() {
             let mut crab = r_crab.unwrap();
             crab.dead = true;

@@ -100,6 +100,5 @@ fn main() {
         .add_system(plane::move_plane_shadow)
         .add_system(plane::collide_with_world)
         .add_system(collision::collide_stuff)
-        .register_type::<collision::Collisions>()
         .run();
 }
