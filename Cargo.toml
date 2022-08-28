@@ -10,6 +10,7 @@ bevy = { version = "0.8", default-features = false, features = ["bevy_asset", "b
 bevy_kira_audio = "0.12"
 bevy-inspector-egui = "0.12"
 bevy_turborand = "0.3.0"
+bevy_prototype_lyon = "0.6.0"
 
 # Enable only a small amount of optimization in debug mode
 [profile.dev]
