@@ -116,9 +116,14 @@ fn setup(mut commands: Commands, server: Res<AssetServer>, mut global_rng: ResMu
 }
 
 fn counter(q_crabs: Query<Entity, With<crab::DeadCrab>>, mut egui_context: ResMut<EguiContext>) {
-    egui::Window::new("Hello").show(egui_context.ctx_mut(), |ui| {
-        ui.label(format!("Dead crabs: {}", q_crabs.iter().count()));
-    });
+    egui::Area::new("my_area")
+        .fixed_pos(egui::pos2(32.0, 32.0))
+        .show(egui_context.ctx_mut(), |ui| {
+            ui.label(
+                egui::RichText::new(format!("Dead crabs: {}", q_crabs.iter().count()))
+                    .color(egui::Color32::BLACK),
+            );
+        });
 }
 
 fn main() {
