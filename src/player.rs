@@ -1,7 +1,7 @@
 use crate::{assets, collision, crab};
 use bevy::prelude::*;
 
-const PLAYER_SPEED: f32 = 150.0;
+const PLAYER_SPEED: f32 = 175.0;
 
 #[derive(Component)]
 pub struct Player;
@@ -11,7 +11,7 @@ pub fn spawn_player(commands: &mut Commands, image_assets: &assets::ImageAssets)
         .spawn_bundle(SpriteBundle {
             texture: image_assets.player.clone(),
             sprite: Sprite {
-                custom_size: Some(Vec2::new(40.0, 28.1)),
+                custom_size: Some(Vec2::new(80.0, 56.2)),
                 ..default()
             },
             transform: Transform {
