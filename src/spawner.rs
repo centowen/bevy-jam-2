@@ -5,7 +5,7 @@ use crate::crab;
 
 use bevy::prelude::*;
 
-const SPAWNER_THRESHOLD_ENERGY: i32 = 15;
+const SPAWNER_THRESHOLD_ENERGY: i32 = 100;
 
 #[derive(Component)]
 pub struct Spawner {
