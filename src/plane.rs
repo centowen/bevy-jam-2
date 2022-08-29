@@ -100,6 +100,20 @@ pub fn move_plane(
     transform.translation.x -= PLANE_SPEED * time.delta_seconds();
 }
 
+pub fn despawn_plane(
+    mut commands: Commands,
+    q_plane: Query<(Entity, &Transform), With<Plane>>,
+    mut global_rng: ResMut<GlobalRng>,
+    image_assets: Res<assets::ImageAssets>,
+) {
+    let (entity, transform) = q_plane.single();
+
+    if transform.translation.x < -1000.0 {
+        commands.entity(entity).despawn_recursive();
+        spawn_plane(&mut commands, &image_assets, &mut global_rng);
+    }
+}
+
 pub fn collide_with_world(
     q_crabs: Query<(&crab::Crab, &Transform)>,
     q_plane: Query<&collision::Collisions, With<Plane>>,

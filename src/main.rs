@@ -152,6 +152,7 @@ fn main() {
         .add_system(crab::despawn_crabs)
         .add_system(player::move_player)
         .add_system(plane::move_plane)
+        .add_system(plane::despawn_plane)
         .add_system(plane::move_plane_shadow)
         .add_system(plane::spawn_smoke)
         .add_system(plane::move_smoke)
