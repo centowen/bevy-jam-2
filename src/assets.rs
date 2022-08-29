@@ -8,6 +8,7 @@ pub struct ImageAssets {
     pub plane: Handle<Image>,
     pub plane_shadow: Handle<Image>,
     pub smoke: Handle<Image>,
+    pub tree: Handle<Image>,
 }
 
 pub struct SoundAssets {

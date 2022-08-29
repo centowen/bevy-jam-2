@@ -91,10 +91,37 @@ fn setup(mut commands: Commands, server: Res<AssetServer>, mut global_rng: ResMu
         plane: server.load("plane.png"),
         plane_shadow: server.load("plane-shadow.png"),
         smoke: server.load("smoke.png"),
+        tree: server.load("tree.png"),
     };
 
     player::spawn_player(&mut commands, &image_assets);
     plane::spawn_plane(&mut commands, &image_assets, &mut global_rng);
+
+    commands.spawn_bundle(SpriteBundle {
+        texture: image_assets.tree.clone(),
+        transform: Transform {
+            translation: Vec3::new(200.0, 300.0, 10.0),
+            ..default()
+        },
+        ..default()
+    });
+    commands.spawn_bundle(SpriteBundle {
+        texture: image_assets.tree.clone(),
+        transform: Transform {
+            translation: Vec3::new(-300.0, 250.0, 10.0),
+            ..default()
+        },
+        ..default()
+    });
+    commands.spawn_bundle(SpriteBundle {
+        texture: image_assets.tree.clone(),
+        transform: Transform {
+            translation: Vec3::new(300.0, -250.0, 10.0),
+            ..default()
+        },
+        ..default()
+    });
+
     commands.insert_resource(image_assets);
     commands.insert_resource(assets::SoundAssets {
         crab: server.load("sound/crab.ogg"),
