@@ -97,11 +97,7 @@ pub fn move_plane(
     let (mut transform, mut altitude) = q_plane.single_mut();
 
     altitude.0 -= PLANE_DESCENT_SPEED * time.delta_seconds();
-    //if altitude.0 < 0.0 {
-    //    altitude.0 = 0.0;
-    //} else {
-        transform.translation.x -= PLANE_SPEED * time.delta_seconds();
-    //}
+    transform.translation.x -= PLANE_SPEED * time.delta_seconds();
 }
 
 pub fn collide_with_world(
