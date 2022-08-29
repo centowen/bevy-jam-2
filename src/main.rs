@@ -7,6 +7,7 @@ mod player;
 mod spawner;
 
 use bevy::{prelude::*, window::PresentMode};
+use bevy_egui::{egui, EguiContext, EguiPlugin};
 use bevy_inspector_egui::WorldInspectorPlugin;
 use bevy_kira_audio::prelude::*;
 use bevy_prototype_lyon::prelude::*;
@@ -114,6 +115,12 @@ fn setup(mut commands: Commands, server: Res<AssetServer>, mut global_rng: ResMu
         .insert(Transform::from_translation(Vec3::new(400.0, 400.0, 1.0)));
 }
 
+fn counter(q_crabs: Query<Entity, With<crab::DeadCrab>>, mut egui_context: ResMut<EguiContext>) {
+    egui::Window::new("Hello").show(egui_context.ctx_mut(), |ui| {
+        ui.label(format!("Dead crabs: {}", q_crabs.iter().count()));
+    });
+}
+
 fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
@@ -125,13 +132,15 @@ fn main() {
             ..default()
         })
         .add_plugins(DefaultPlugins)
+        .add_plugin(EguiPlugin)
         .add_plugin(ShapePlugin)
-        .add_plugin(WorldInspectorPlugin::new())
+        // .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(RngPlugin::default())
         .add_plugin(AudioPlugin)
         .insert_resource(ClearColor(Color::rgb(0.8, 0.85, 0.85)))
         .add_startup_system(setup)
         .add_startup_system(audio::start_background_audio)
+        .add_system(counter)
         .add_system(spawner::spawn_tick)
         .add_system(audio::play_audio)
         .add_system(crab::move_crabs)

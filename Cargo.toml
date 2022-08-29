@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 bevy = { version = "0.8", default-features = false, features = ["bevy_asset", "bevy_winit", "render", "png", "x11"] }
 bevy_kira_audio = "0.12"
+bevy_egui = "0.15"
 bevy-inspector-egui = "0.12"
 bevy_turborand = "0.3.0"
 bevy_prototype_lyon = "0.6.0"
