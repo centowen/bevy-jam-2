@@ -30,7 +30,7 @@ fn spawn_crab(translation: Vec3, commands: &mut Commands, images: &assets::Image
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
-                custom_size: Some(Vec2::new(16.0, 10.0)),
+                custom_size: Some(4.0 * Vec2::new(16.0, 10.0)),
                 ..default()
             },
             texture: images.crab.clone(),
