@@ -6,6 +6,7 @@ use crate::crab;
 use bevy::prelude::*;
 
 const SPAWNER_THRESHOLD_ENERGY: i32 = 100;
+const CRAB_SIZE: (f32, f32) = (64.0, 40.0);
 
 #[derive(Component)]
 pub struct Spawner {
@@ -30,7 +31,7 @@ fn spawn_crab(translation: Vec3, commands: &mut Commands, images: &assets::Image
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
-                custom_size: Some(4.0 * Vec2::new(16.0, 10.0)),
+                custom_size: Some(Vec2::new(CRAB_SIZE.0, CRAB_SIZE.1)),
                 ..default()
             },
             texture: images.crab.clone(),
@@ -51,7 +52,7 @@ pub fn spawn_dead_crab(translation: Vec3, commands: &mut Commands, images: &asse
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
-                custom_size: Some(Vec2::new(16.0, 10.0)),
+                custom_size: Some(Vec2::new(CRAB_SIZE.0, CRAB_SIZE.1)),
                 ..default()
             },
             texture: images.dead_crab.clone(),
