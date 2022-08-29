@@ -1,7 +1,7 @@
 use crate::{assets, collision, crab};
 use bevy::prelude::*;
 
-const PLAYER_SPEED: f32 = 50.0;
+const PLAYER_SPEED: f32 = 150.0;
 
 #[derive(Component)]
 pub struct Player;
