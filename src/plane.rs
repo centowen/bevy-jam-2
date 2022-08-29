@@ -1,6 +1,8 @@
 use crate::{assets, collision, crab, spawner};
 use bevy::prelude::*;
+use bevy_turborand::*;
 use std::f32::consts::PI;
+use std::time::Duration;
 
 const PLANE_SPEED: f32 = 50.0;
 const INITIAL_PLANE_ALTITUDE: f32 = 100.0;
@@ -16,7 +18,39 @@ pub struct Altitude(pub f32);
 #[derive(Component)]
 pub struct PlaneShadow;
 
-pub fn spawn_plane(commands: &mut Commands, image_assets: &assets::ImageAssets) {
+#[derive(Component)]
+pub struct SmokeSource {
+    mean_time: Duration,
+    timer: Timer,
+    rng: RngComponent,
+}
+
+#[derive(Component)]
+pub struct Smoke {
+    life_time: Timer,
+}
+
+impl SmokeSource {
+    fn new(mean_time: Duration, global_rng: &mut GlobalRng) -> Self {
+        SmokeSource {
+            mean_time,
+            timer: Timer::new(mean_time, false),
+            rng: RngComponent::from(global_rng),
+        }
+    }
+
+    fn reset(&mut self) {
+        let duration = self.mean_time.mul_f32(self.rng.f32() + self.rng.f32());
+        self.timer.set_duration(duration);
+        self.timer.reset();
+    }
+}
+
+pub fn spawn_plane(
+    commands: &mut Commands,
+    image_assets: &assets::ImageAssets,
+    global_rng: &mut GlobalRng,
+) {
     commands
         .spawn_bundle(SpriteBundle {
             texture: image_assets.plane.clone(),
@@ -35,6 +69,7 @@ pub fn spawn_plane(commands: &mut Commands, image_assets: &assets::ImageAssets) 
         .insert(Plane)
         .insert(Name::new("Plane"))
         .insert(collision::Collisions::new())
+        .insert(SmokeSource::new(Duration::from_millis(400), global_rng))
         .with_children(|parent| {
             parent
                 .spawn_bundle(SpriteBundle {
@@ -94,4 +129,48 @@ pub fn move_plane_shadow(
     let mut transform = q_plane_shadow.single_mut();
     transform.translation.x = -altitude * SUN_ANGLE.sin();
     transform.translation.y = -altitude * SUN_ANGLE.cos();
+}
+
+pub fn spawn_smoke(
+    mut commands: Commands,
+    mut q_plane: Query<(&Transform, &mut SmokeSource, &Altitude), With<Plane>>,
+    image_assets: Res<assets::ImageAssets>,
+    time: Res<Time>,
+) {
+    for (transform, mut smoke_source, altitude) in q_plane.iter_mut() {
+        if altitude.0 <= 0.0 {
+            continue;
+        }
+        smoke_source.timer.tick(time.delta());
+        if smoke_source.timer.just_finished() {
+            commands
+                .spawn_bundle(SpriteBundle {
+                    texture: image_assets.smoke.clone(),
+                    transform: Transform {
+                        translation: transform.translation + 75.0 * Vec3::X,
+                        ..default()
+                    },
+                    ..default()
+                })
+                .insert(Smoke {
+                    life_time: Timer::new(Duration::from_secs(3), false),
+                });
+            smoke_source.reset();
+        }
+    }
+}
+
+pub fn move_smoke(
+    mut commands: Commands,
+    mut q_smoke: Query<(Entity, &mut Transform, &mut Smoke)>,
+    time: Res<Time>,
+) {
+    for (entity, mut transform, mut smoke) in q_smoke.iter_mut() {
+        smoke.life_time.tick(time.delta());
+        if smoke.life_time.finished() {
+            commands.entity(entity).despawn_recursive();
+            continue;
+        }
+        transform.translation.y += 20.0 * time.delta_seconds();
+    }
 }

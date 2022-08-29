@@ -78,7 +78,7 @@ fn build_airfield(commands: &mut Commands) {
     ));
 }
 
-fn setup(mut commands: Commands, server: Res<AssetServer>) {
+fn setup(mut commands: Commands, server: Res<AssetServer>, mut global_rng: ResMut<GlobalRng>) {
     commands.spawn_bundle(Camera2dBundle::default());
 
     build_airfield(&mut commands);
@@ -89,10 +89,11 @@ fn setup(mut commands: Commands, server: Res<AssetServer>) {
         player: server.load("player.png"),
         plane: server.load("plane.png"),
         plane_shadow: server.load("plane-shadow.png"),
+        smoke: server.load("smoke.png"),
     };
 
     player::spawn_player(&mut commands, &image_assets);
-    plane::spawn_plane(&mut commands, &image_assets);
+    plane::spawn_plane(&mut commands, &image_assets, &mut global_rng);
     commands.insert_resource(image_assets);
     commands.insert_resource(assets::SoundAssets {
         crab: server.load("sound/crab.ogg"),
@@ -138,6 +139,8 @@ fn main() {
         .add_system(player::move_player)
         .add_system(plane::move_plane)
         .add_system(plane::move_plane_shadow)
+        .add_system(plane::spawn_smoke)
+        .add_system(plane::move_smoke)
         .add_system(plane::collide_with_world)
         .add_system(collision::collide_stuff)
         .run();
