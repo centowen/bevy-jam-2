@@ -8,7 +8,7 @@ mod spawner;
 
 use bevy::{prelude::*, window::PresentMode};
 use bevy_egui::{egui, EguiContext, EguiPlugin};
-use bevy_inspector_egui::WorldInspectorPlugin;
+// use bevy_inspector_egui::WorldInspectorPlugin;
 use bevy_kira_audio::prelude::*;
 use bevy_prototype_lyon::prelude::*;
 use bevy_turborand::*;
